@@ -1,18 +1,17 @@
-# Use Node.js 20 base image
+# Use Node.js 20
 FROM node:20
 
-# Install Python and ffmpeg for yt-dlp
-RUN apt-get update && apt-get install -y python3 ffmpeg
+# Install dependencies: python3, ffmpeg for yt-dlp-exec
+RUN apt-get update && \
+    apt-get install -y python3 ffmpeg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
+# Copy only package.json and lock first for caching
 COPY package*.json ./
-RUN npm install
 
-# Copy the rest of the project
-COPY . .
-
-# Start the bot
-CMD ["node", "index.js"]
+# Install Node.js dependencies
+RUN npm instal
